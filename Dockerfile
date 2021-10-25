@@ -1,13 +1,10 @@
-FROM ubuntu:18.04
+FROM debian:11
 
 COPY build/java_policy /etc
 ENV DEBIAN_FRONTEND=noninteractive
-RUN buildDeps='software-properties-common git libtool cmake python-dev python3-pip python-pip libseccomp-dev curl' && \
-    apt-get update && apt-get install -y python python3 python-pkg-resources python3-pkg-resources $buildDeps && \
-    add-apt-repository ppa:openjdk-r/ppa && add-apt-repository ppa:ubuntu-toolchain-r/test && \
-    apt-get update && apt-get install -y openjdk-11-jdk gcc-9 g++-9 && \
-    update-alternatives --install  /usr/bin/gcc gcc /usr/bin/gcc-9 40 && \
-    update-alternatives --install  /usr/bin/g++ g++ /usr/bin/g++-9 40 && \
+RUN buildDeps='software-properties-common git libtool cmake python2-dev python3-pip libseccomp-dev curl' && \
+    apt-get update && apt-get install -y python2 python3 python-pkg-resources python3-pkg-resources $buildDeps && \
+    apt-get update && apt-get install -y openjdk-11-jdk g++ && \
     pip3 install -I --no-cache-dir psutil gunicorn flask requests idna && \
     cd /tmp && git clone -b newnew  --depth 1 https://github.com/QingdaoU/Judger.git && cd Judger && \
     mkdir build && cd build && cmake .. && make && make install && cd ../bindings/Python && python3 setup.py install && \
