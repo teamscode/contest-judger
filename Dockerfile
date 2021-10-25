@@ -6,7 +6,7 @@ RUN buildDeps='software-properties-common git libtool cmake python2-dev python3-
     apt-get update && apt-get install -y python2 python3 python-pkg-resources python3-pkg-resources $buildDeps && \
     apt-get update && apt-get install -y openjdk-11-jdk g++ && \
     pip3 install -I --no-cache-dir psutil gunicorn flask requests idna && \
-    cd /tmp && git clone -b newnew  --depth 1 https://github.com/QingdaoU/Judger.git && cd Judger && \
+    cd /tmp && git clone -b newnew  --depth 1 https://github.com/chenhongqiao/Judger.git && cd Judger && \
     mkdir build && cd build && cmake .. && make && make install && cd ../bindings/Python && python3 setup.py install && \
     apt-get purge -y --auto-remove $buildDeps && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
