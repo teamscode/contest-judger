@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt install -y software-properties-common git libtool cmake libseccomp-dev curl
 
-RUN cd /tmp && git clone -b newnew  --depth 1 https://github.com/chenhongqiao/Judger.git && cd Judger && \
+RUN cd /tmp && git clone -b newnew  --depth 1 https://github.com/teamscode/contest-sandbox.git && cd Judger && \
     mkdir build && cd build && cmake .. && make
 
 FROM debian:11
