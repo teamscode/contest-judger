@@ -18,7 +18,7 @@ COPY --from=judger-build-env /tmp/contest-sandbox /tmp/contest-sandbox
 RUN apt update && apt install -y python2 python3 cmake python-pkg-resources python3-pip python3-pkg-resources openjdk-11-jdk g++ python3-setuptools && \
     pip3 install -I --no-cache-dir psutil gunicorn flask requests idna && \
     cd /tmp/contest-sandbox/build && \
-    make install && cd ../bindings/Python && python3 setup.py install && \
+    make install && pip3 install ../bindings/Python && \
     apt purge -y --auto-remove python3-pip cmake && apt clean && rm -rf /var/lib/apt/lists/*
     
 RUN mkdir -p /code && \
