@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt install -y software-properties-common git libtool cmake libseccomp-dev curl
 
-RUN cd /tmp && git clone -b newnew  --depth 1 https://github.com/teamscode/contest-sandbox.git && cd Judger && \
+RUN cd /tmp && git clone -b newnew  --depth 1 https://github.com/teamscode/contest-sandbox.git && cd        contest-sandbox && \
     mkdir build && cd build && cmake .. && make
 
 FROM debian:11
@@ -13,11 +13,11 @@ COPY build/java_policy /etc
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-COPY --from=judger-build-env /tmp/Judger /tmp/Judger
+COPY --from=judger-build-env /tmp/contest-sandbox /tmp/contest-sandbox
 
 RUN apt update && apt install -y python2 python3 cmake python-pkg-resources python3-pip python3-pkg-resources openjdk-11-jdk g++ && \
     pip3 install -I --no-cache-dir psutil gunicorn flask requests idna && \
-    cd /tmp/Judger/build && \
+    cd /tmp/contest-sandbox/build && \
     make install && cd ../bindings/Python && python3 setup.py install && \
     apt purge -y --auto-remove python3-pip cmake && apt clean && rm -rf /var/lib/apt/lists/*
     

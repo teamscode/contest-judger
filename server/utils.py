@@ -1,4 +1,4 @@
-import _judger
+import sandbox
 import hashlib
 import logging
 import os
@@ -18,7 +18,7 @@ logger.setLevel(logging.WARNING)
 
 
 def server_info():
-    ver = _judger.VERSION
+    ver = sandbox.VERSION
     return {"hostname": socket.gethostname(),
             "cpu": psutil.cpu_percent(),
             "cpu_core": psutil.cpu_count(),
