@@ -4,7 +4,7 @@ import pwd
 import grp
 
 JUDGER_WORKSPACE_BASE = "/judger/run"
-LOG_BASE = "/log"
+LOG_BASE = "/data/log"
 
 COMPILER_LOG_PATH = os.path.join(LOG_BASE, "compile.log")
 JUDGER_RUN_LOG_PATH = os.path.join(LOG_BASE, "judger.log")
@@ -19,6 +19,6 @@ COMPILER_GROUP_GID = grp.getgrnam("compiler").gr_gid
 SPJ_USER_UID = pwd.getpwnam("spj").pw_uid
 SPJ_GROUP_GID = grp.getgrnam("spj").gr_gid
 
-TEST_CASE_DIR = "/test_case"
+TEST_CASE_DIR = "/data/test_case"
 SPJ_SRC_DIR = "/judger/spj"
 SPJ_EXE_DIR = "/judger/spj"
