@@ -1,4 +1,4 @@
-FROM debian:11 AS judger-build-env
+FROM mirror.gcr.io/library/debian:11 AS judger-build-env
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -7,7 +7,7 @@ RUN apt update && apt install -y software-properties-common git libtool cmake li
 RUN cd /tmp && git clone -b main --depth 1 https://github.com/teamscode/contest-sandbox.git && cd        contest-sandbox && \
     mkdir build && cd build && cmake .. && make
 
-FROM debian:11
+FROM mirror.gcr.io/library/debian:11
 
 COPY build/java_policy /etc
 
