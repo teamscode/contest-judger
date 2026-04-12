@@ -5,11 +5,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt install -y software-properties-common git libtool cmake libseccomp-dev curl
 
 RUN cd /tmp && git clone -b main --depth 1 https://github.com/teamscode/contest-sandbox.git && cd        contest-sandbox && \
-    mkdir build && cd build && cmake .. && make
+    mkdir build && cd build && cmake .. && make && \
+    curl -fsSL https://raw.githubusercontent.com/MikeMirzayanov/testlib/master/testlib.h -o /tmp/testlib.h
 
 FROM mirror.gcr.io/library/debian:11
 
 COPY build/java_policy /etc
+COPY --from=judger-build-env /tmp/testlib.h /usr/include/testlib.h
 
 ENV DEBIAN_FRONTEND=noninteractive
 
