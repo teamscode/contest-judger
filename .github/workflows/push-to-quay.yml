@@ -27,4 +27,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: quay.io/teamscode/contest-judger:latest
+          tags: |
+            quay.io/teamscode/contest-judger:latest
+            quay.io/teamscode/contest-judger:${{ github.sha }}
