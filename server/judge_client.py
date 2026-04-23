@@ -66,13 +66,17 @@ class JudgeClient(object):
         result = output_md5 == self._get_test_case_file_info(test_case_file_id)["stripped_output_md5"]
         return output_md5, result
 
-    def _spj(self, in_file_path, user_out_file_path):
+    def _spj(self, in_file_path, user_out_file_path, test_case_file_id):
         os.chown(self._submission_dir, SPJ_USER_UID, 0)
         os.chown(user_out_file_path, SPJ_USER_UID, 0)
         os.chmod(user_out_file_path, 0o740)
+        test_case_info = self._get_test_case_file_info(test_case_file_id)
+        ans_file_path = os.path.join(self._test_case_dir, test_case_info["output_name"]) \
+            if "output_name" in test_case_info else in_file_path
         command = self._spj_config["command"].format(exe_path=self._spj_exe,
                                                      in_file_path=in_file_path,
-                                                     user_out_file_path=user_out_file_path)
+                                                     user_out_file_path=user_out_file_path,
+                                                     ans_file_path=ans_file_path)
         command = shlex.split(command)
         seccomp_rule_name = self._spj_config["seccomp_rule"]
         result = sandbox.run(max_cpu_time=self._max_cpu_time * 3,
@@ -131,7 +135,7 @@ class JudgeClient(object):
                                  max_real_time=self._max_real_time,
                                  max_memory=self._max_memory,
                                  max_stack=128 * 1024 * 1024,
-                                 max_output_size=max(test_case_info.get("output_size", 0) * 2, 1024 * 1024 * 16),
+                                 max_output_size=max(test_case_info.get("output_size", 0) * 2, 1024 * 1024 * 64),
                                  max_process_number=sandbox.UNLIMITED,
                                  exe_path=command[0],
                                  args=command[1::],
@@ -157,7 +161,8 @@ class JudgeClient(object):
                     if not self._spj_config or not self._spj_version:
                         raise JudgeClientError("spj_config or spj_version not set")
 
-                    spj_result = self._spj(in_file_path=in_file, user_out_file_path=user_output_file)
+                    spj_result = self._spj(in_file_path=in_file, user_out_file_path=user_output_file,
+                                           test_case_file_id=test_case_file_id)
 
                     if spj_result == SPJ_WA:
                         run_result["result"] = sandbox.RESULT_WRONG_ANSWER
