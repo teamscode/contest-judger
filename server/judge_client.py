@@ -1,6 +1,7 @@
 import sandbox
 import hashlib
 import json
+import logging
 import os
 import shutil
 from multiprocessing import Pool
@@ -10,7 +11,7 @@ import psutil
 
 from config import TEST_CASE_DIR, JUDGER_RUN_LOG_PATH, RUN_GROUP_GID, RUN_USER_UID, SPJ_EXE_DIR, SPJ_USER_UID, SPJ_GROUP_GID, RUN_GROUP_GID
 from exception import JudgeClientError
-from utils import ProblemIOMode
+from utils import ProblemIOMode, logger
 
 SPJ_WA = 1
 SPJ_AC = 0
@@ -77,7 +78,7 @@ class JudgeClient(object):
         result = sandbox.run(max_cpu_time=self._max_cpu_time * 3,
                              max_real_time=self._max_cpu_time * 9,
                              max_memory=self._max_memory * 3,
-                             max_stack=sandbox.UNLIMITED,
+                             max_stack=128 * 1024 * 1024,
                              max_output_size=1024 * 1024 * 1024,
                              max_process_number=sandbox.UNLIMITED,
                              exe_path=command[0],
@@ -129,7 +130,7 @@ class JudgeClient(object):
         run_result = sandbox.run(max_cpu_time=self._max_cpu_time,
                                  max_real_time=self._max_real_time,
                                  max_memory=self._max_memory,
-                                 max_stack=sandbox.UNLIMITED,
+                                 max_stack=128 * 1024 * 1024,
                                  max_output_size=max(test_case_info.get("output_size", 0) * 2, 1024 * 1024 * 16),
                                  max_process_number=sandbox.UNLIMITED,
                                  exe_path=command[0],
@@ -142,6 +143,8 @@ class JudgeClient(object):
                                  memory_limit_check_only=self._run_config.get("memory_limit_check_only", 0),
                                  **kwargs)
         run_result["test_case"] = test_case_file_id
+        if os.environ.get("judger_debug") == "1":
+            logger.warning("sandbox result: %s", run_result)
 
         # if progress exited normally, then we should check output result
         run_result["output_md5"] = None
