@@ -11,7 +11,6 @@ RUN cd /tmp && git clone -b main --depth 1 https://github.com/teamscode/contest-
 FROM mirror.gcr.io/library/debian:11
 
 COPY build/java_policy /etc
-COPY --from=judger-build-env /tmp/testlib.h /usr/include/testlib.h
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -27,6 +26,9 @@ RUN mkdir -p /code && \
     useradd -u 12001 compiler && useradd -u 12002 code && useradd -u 12003 spj && usermod -a -G code spj
 
 HEALTHCHECK --interval=5s --retries=3 CMD python3 /code/service.py
+
+COPY --from=judger-build-env /tmp/testlib.h /usr/include/testlib.h
+RUN g++ -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c++17 -x c++-header /usr/include/testlib.h -o /usr/include/testlib.h.gch
 
 ADD server /code
 WORKDIR /code
